@@ -30,6 +30,17 @@ companies2.columns = companies2.iloc[0]
 companies2 = companies2.drop(labels=0, axis=0)
 
 
-
+# Parse the online dataset
 response = requests.get('https://pages.stern.nyu.edu/~adamodar/New_Home_Page/datafile/Betas.html', verify=False)
-print(response.text)
+soup = BeautifulSoup(response.text, 'lxml')
+
+table = soup.find('table')
+industries_rows = []
+for row in table.find_all('tr'):
+    tds = row.find_all('td')
+    industries_rows.append([' '.join(val.text.split()) for val in tds])  
+    
+industries = pd.DataFrame(industries_rows)
+industries.columns = industries.iloc[0].str.strip()
+industries = industries.drop(labels=[0,97], axis=0)
+
