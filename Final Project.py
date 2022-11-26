@@ -10,7 +10,9 @@
 #	Two static
 #	Two Shiny Interactive
 # 3. Text processing (G)
+#   Text analysis - HW3
 # 4. Analysis (L)
+#   Fit a model
 # 5. Writeup (G)
 # 	2-3 pages
 #
@@ -23,7 +25,7 @@ from bs4 import BeautifulSoup
 
 
 
-
+### Part 1
 # Change your base path HERE!!!
 base_path = r'/Users/simonking/Documents/GitHub/Python II/PythonII_Final_Project'
 
@@ -54,4 +56,40 @@ for row in table.find_all('tr'):
 industries = pd.DataFrame(industries_rows)
 industries.columns = industries.iloc[0].str.strip()
 industries = industries.drop(labels=[0,97], axis=0)
+
+
+
+
+
+### Part 2
+
+
+
+
+
+
+
+
+
+
+### Part 3
+
+
+
+
+
+
+
+
+
+
+
+
+### Part 4
+
+
+
+
+
+
 
