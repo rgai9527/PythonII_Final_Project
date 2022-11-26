@@ -4,6 +4,17 @@
 # Final Project
 # by Ronghua Gai and Xinyu Liu
 #
+# Assignments
+# 1. Data wrangling (G)
+# 2. Plotting (L)
+#	Two static
+#	Two Shiny Interactive
+# 3. Text processing (G)
+# 4. Analysis (L)
+# 5. Writeup (G)
+# 	2-3 pages
+#
+#
 # #################################################
 import os
 import requests
