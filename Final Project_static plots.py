@@ -1,53 +1,42 @@
-# Data Skills 2
-# Autumn 2022
-#
-# Final Project
-# by Ronghua Gai and Xinyu Liu
-#
-# #################################################
-import os
 import requests
 import pandas as pd
 from bs4 import BeautifulSoup
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
+import os
 
 
 
 
 # Change your base path HERE!!!
-base_path = r'/Users/catherine/Documents/GitHub/PythonII_Final_Project'
+root_path = r'/Users/catherine/Documents/GitHub/PythonII_Final_Project'
 
 
 # Set the paths, read the CapIQ csv fiels, and do basic cleaning
-companies1_path = os.path.join(base_path, 'Company Screening 1.csv')
-companies2_path = os.path.join(base_path, 'Company Screening 2.csv')
-
+root_path = r'/Users/catherine/Documents/GitHub/PythonII_Final_Project'
+companies1_path = os.path.join(root_path, 'Company Screening 1.csv')
 companies1 = pd.read_csv(companies1_path, skiprows=6)
 companies1.columns = companies1.iloc[0]
 companies1 = companies1.drop(labels=0, axis=0)
 
+companies2_path = os.path.join(root_path, 'Company Screening 2.csv')
 companies2 = pd.read_csv(companies2_path, skiprows=6)
 companies2.columns = companies2.iloc[0]
 companies2 = companies2.drop(labels=0, axis=0)
 
-
-# Parse the online dataset
 response = requests.get('https://pages.stern.nyu.edu/~adamodar/New_Home_Page/datafile/Betas.html', verify=False)
 soup = BeautifulSoup(response.text, 'lxml')
 
 table = soup.find('table')
 industries_rows = []
 for row in table.find_all('tr'):
-    tds = row.find_all('td')
-    industries_rows.append([' '.join(val.text.split()) for val in tds])  
-    
+     tds = row.find_all('td')
+     industries_rows.append([' '.join(val.text.split()) for val in tds])  
+     
 industries = pd.DataFrame(industries_rows)
 industries.columns = industries.iloc[0].str.strip()
 industries = industries.drop(labels=[0,97], axis=0)
-
-
 
 
 #1 static plot for specific industries including
@@ -103,25 +92,4 @@ df_heat = df_heat.set_index('%_Price_change_range')
     #plot the heat map of x-year, y-beta range, numbers of companies
 fig, ax = plt.subplots(figsize=(13,7))
 sns.heatmap(df_heat,fmt="",cmap='RdYlGn',ax=ax)
-
-
-
-   #plot the heat map of x-year, y-beta range, numbers of companies
-
-#3 interactive plots for industry beta 
-
-#organize the industries dataframe
-    #transpose the industries dataframe
-industries = industries.set_index('Industry Name')
-industry_beta = industries.iloc[:,11:14]
-industry_beta = industry_beta.T
-    #transform to numeric column of 2018, 2019,2020,2021 beta
-industry_beta= industry_beta.astype(float)
-    #to be continued
-print(industries.loc['Advertising']['Beta'])
-
-
-
-
-
 
