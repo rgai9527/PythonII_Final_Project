@@ -23,7 +23,6 @@ industries = pd.DataFrame(industries_rows)
 industries.columns = industries.iloc[0].str.strip()
 industries = industries.drop(labels=[0,97], axis=0)
 
-root_path = r'/Users/catherine/Documents/GitHub/PythonII_Final_Project'
 
 
 app_ui = ui.page_fluid(
