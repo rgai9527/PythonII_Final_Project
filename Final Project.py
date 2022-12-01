@@ -17,7 +17,7 @@ import numpy as np
 
 
 # Change your base path HERE!!!
-base_path = r'/Users/catherine/Documents/GitHub/PythonII_Final_Project'
+base_path = r'/Users/simonking/Documents/GitHub/Python II/PythonII_Final_Project'
 
 
 # Set the paths, read the CapIQ csv fiels, and do basic cleaning
