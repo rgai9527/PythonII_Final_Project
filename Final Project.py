@@ -4,6 +4,16 @@
 # Final Project
 # by Ronghua Gai and Xinyu Liu
 #
+#
+# Assignments:
+# 1. Data wrangling (GAI)
+# 2. Plotting (LIU)
+# 3. Text processing (GAI)
+# 4. Analysis (LIU)
+# 5. Writeup (GAI)
+#
+#
+#
 # #################################################
 import os
 import requests
@@ -12,9 +22,18 @@ from bs4 import BeautifulSoup
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
+import spacy
+import pycountry
+import pandas as pd
+import datetime as dt
+import matplotlib.pyplot as plt
+from spacytextblob.spacytextblob import SpacyTextBlob
 
 
 
+
+
+### Part 1
 
 # Change your base path HERE!!!
 base_path = r'/Users/simonking/Documents/GitHub/Python II/PythonII_Final_Project'
@@ -49,6 +68,8 @@ industries = industries.drop(labels=[0,97], axis=0)
 
 
 
+
+### Part 2
 
 #1 static plot for specific industries including
 #Air transport, computer service, pharma drugs, food wholesaler, gas product, real estate general industries
@@ -119,6 +140,87 @@ industry_beta = industry_beta.T
 industry_beta= industry_beta.astype(float)
     #to be continued
 print(industries.loc['Advertising']['Beta'])
+
+
+
+
+
+### Part 3
+
+# Set up the base path
+base_path = r'/Users/simonking/Documents/GitHub/Python II/homework-3-rgai9527-1'
+fig_path = os.path.join(base_path, 'question1_plot.png')  
+
+
+# Create a dictionary to restore all refugee text files
+reports = {}
+for file in os.listdir(base_path):
+    if file.endswith(".txt") and '2022' in file:
+        file_path = os.path.join(base_path, file)
+        with open(file_path, 'r') as f:
+            reports[file[:-4]] = f.readlines()
+
+            
+
+# Convert the dictionary into dataframe, clean and merge the data, prepare for intepretation
+## Conversion
+reports_clean = pd.DataFrame(dict([ (k,pd.Series(v)) for k,v in reports.items() ]))
+
+## Drop blank rows
+reports_clean = reports_clean.drop([2,4,6,9,11])
+
+## Merge rows together,reset index, and clean the data
+reports_clean = reports_clean.apply(lambda x: ''.join(x.astype(str))).reset_index()
+reports_clean = reports_clean.rename({0: 'Text', 'index': 'Date'}, axis=1)
+reports_clean = reports_clean.applymap(lambda x: x.replace('\n', '. ').replace('..', '.'))
+reports_clean['Date'] = reports_clean['Date'].map(lambda x: dt.datetime.strptime(x,"%d%B%Y").strftime("%B/%d"))
+reports_clean = reports_clean.sort_values(by='Date').reset_index().drop(columns=['index'])
+
+
+
+# Analyze the sentiment of each article
+nlp = spacy.load('en_core_web_sm')
+nlp.add_pipe('spacytextblob');
+
+## Add a new column to store sentiment levels
+reports_clean['Sentiment'] = 0
+for i in range(len(reports_clean['Text'])):
+    reports_clean.iloc[i,2] = nlp(reports_clean.iloc[i,1])._.blob.polarity
+
+
+
+# Plot the sentiments
+fig = plt.figure()
+fig, ax = plt.subplots()
+plt.rcParams["figure.figsize"] = [8, 4]
+plt.rcParams["figure.autolayout"] = True
+ax.plot(reports_clean['Date'], reports_clean['Sentiment'], 'r*-')
+ax.set_xlabel('Year 2022')
+ax.set_ylabel('Sentiment')
+ax.set_title('Q1 Plot')
+plt.savefig(fig_path)
+
+
+
+
+
+
+
+
+
+
+
+
+### Part 4
+
+
+
+
+
+
+
+
+
 
 
 
