@@ -26,25 +26,46 @@ industries = industries.drop(labels=[0,97], axis=0)
 
 
 app_ui = ui.page_fluid(
+    #Adjust the styles to center everything
+    ui.tags.style("#container {display: flex; flex-direction: column; align-items: center;}"),
+    #Main container div
+    ui.tags.div(
+    ui.h2('Unlevered Beta corrected for Cash in Each Industry'),
     ui.input_select(id='I',label = 'Choose an industry',choices = list(industries['Industry Name'] )),
-    ui.output_text('txt')
+    ui.output_plot('viz'),
+    ui.output_table('table'),
+    id='container')
     
 )
 
 def server(input, output, session):
     @reactive.Calc
     def get_industry():
-        idf = industries.set_index('Industry Name')
-        return idf
-    
+        industry =  industries[industries['Industry Name'] == input.I()]
+        return industry[['Industry Name','2018','2019','2020','2021']]
+   
+        
+        
+    @output
+    @render.table
+    def table():
+        industry = get_industry()
+        
+        return industry
     
     
     @output
-    @render.text
-    def txt():
+    @render.plot
+    def viz():
         industry = get_industry()
-        number = industry.loc[input.I()]['Beta']
-        return 'Beta is '+number
-
-
+        industry = industry.set_index('Industry Name')
+        industry = industry.astype(float)
+        industry = industry.T.reset_index()
+        industry= industry.rename(columns = {0:'Year'})
+        fig,ax = plt.subplots()
+        ax.plot(industry['Year'],industry.iloc[:,1])
+        ax.scatter(industry['Year'],industry.iloc[:,1])
+        ax.set_title(f"{input.I()} Unlevered Beta")
+        return fig
+        
 app = App(app_ui, server)
